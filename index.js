@@ -17,6 +17,9 @@ var WordObj = require('./Word.js');
 prompt.message = "";
 prompt.delimiter = "";
 
+// Word object
+var Word = null;
+
 // Random word
 var randomWord = "";
 
@@ -25,9 +28,6 @@ var numberOfLettersInWord = 0;
 
 // Number of correctly guessed letters in the random word
 var numberOfGuessedLetters = 0;
-
-// Word object
-var Word = null;
 
 // Number of guesses remaining
 var guessesRemaining = 0;
@@ -46,7 +46,6 @@ var startUpGame = () => {
     
     // Display word
     console.log(Word.getWord() + "\n");
-
 }
 
 // Function to create the random word to guess
@@ -66,8 +65,11 @@ var createWordToGuess = () => {
     // Get number of unique letters in the random word
     numberOfLettersInWord = uniqueValues.length;
 
+    // Set random word
     randomWord = randomWordArray[0];   
     console.log("Random word is " + randomWord);
+
+    // Add letters of the random word to the word object
     for (var i = 0; i < randomWord.length; i++) {
         Word.addLetter(randomWord[i]);
     }
@@ -101,7 +103,10 @@ var playGame = (letter) => {
         // Restart game
         console.log("Next word!\n");
         startUpGame();
-    } else if (numberOfGuessedLetters == numberOfLettersInWord) {
+    }
+    
+    // Check for end of the game
+    if (numberOfGuessedLetters == numberOfLettersInWord) {
         console.log("You got it Right!!. Next word!\n");
         startUpGame();
     }
@@ -119,7 +124,7 @@ var getLetter = () => {
     }, function (err, result) {
         // Check for error
         if (err) {
-            console.log("\n\nProgram ended. Play again soon!!!.");
+            console.log("\n\nGame ended. Play again soon!!!.");
             return;
         }
 
