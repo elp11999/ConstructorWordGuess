@@ -7,21 +7,109 @@
 // Load prompt library
 var prompt = require('prompt');
 
+// Load random-words library
+var randomWords = require('random-words');
+
+// Load Word object
+var WordObj = require('./Word.js');
+
 // Reset prompt configuration
 prompt.message = "";
-prompt.delimiter = ""; 
+prompt.delimiter = "";
 
-// Start the prompt
-prompt.start();
+// Random word
+var randomWord = "";
 
-// Function to check if input is a letter
-function validateInput(letter) {
-    var objRegExp  = /^[a-z\u00C0-\u00ff]+$/;
-    return objRegExp.test(letter);
-  }
+// Number of unique letters in the random word
+var numberOfLettersInWord = 0;
+
+// Number of correctly guessed letters in the random word
+var numberOfGuessedLetters = 0;
+
+// Word object
+var Word = null;
+
+// Number of guesses remaining
+var guessesRemaining = 0;
+
+// Function to start game
+var startUpGame = () => {
+
+    // Set guesses remaining
+    guessesRemaining = 10;
+
+    // Set number of guessed letters
+    numberOfGuessedLetters = 0;
+
+    // Create word to guess
+    createWordToGuess();
+    
+    // Display word
+    console.log(Word.getWord() + "\n");
+
+}
+
+// Function to create the random word to guess
+var createWordToGuess = () => {
+    var randomWordArray = [];
+    var uniqueValues = [];
+
+    // Create word object
+    Word = new WordObj();
+
+    // Create random word
+    randomWordArray = randomWords({exactly:1, maxLength: 64, wordsPerString:1});
+
+    // Create array of unique letters from the random word
+    uniqueValues = [...new Set(randomWordArray.join(","))];
+
+    // Get number of unique letters in the random word
+    numberOfLettersInWord = uniqueValues.length;
+
+    randomWord = randomWordArray[0];   
+    console.log("Random word is " + randomWord);
+    for (var i = 0; i < randomWord.length; i++) {
+        Word.addLetter(randomWord[i]);
+    }
+};
+
+// Function to play game
+var playGame = (letter) => {
+    var isCorrectGuess = false;
+
+    // Check if letter exists in word
+    isCorrectGuess = Word.guessLetter(letter);
+    console.log("\r");
+
+    // Display result
+    if (isCorrectGuess) {
+        console.log("CORRECT!!!\n");
+        numberOfGuessedLetters++;
+    } else {
+        console.log("INCORRECT!!!\n");
+        console.log(--guessesRemaining + " Guesses remaining\n");
+    }
+
+    // Display word
+    console.log(Word.getWord() + "\n");
+
+    // Check for No guesses remaining
+    if (guessesRemaining == 0) {
+        console.log("No guessing remaining. You lose!!\n");
+        console.log("The word was: " + randomWord + "\n");
+
+        // Restart game
+        console.log("Next word!\n");
+        startUpGame();
+    } else if (numberOfGuessedLetters == numberOfLettersInWord) {
+        console.log("You got it Right!!. Next word!\n");
+        startUpGame();
+    }
+}
 
 // Function to get letter from user
 var getLetter = () => {
+
     prompt.get({
     properties: {
         letter: {
@@ -31,18 +119,28 @@ var getLetter = () => {
     }, function (err, result) {
         // Check for error
         if (err) {
-            console.log("\nProgram ended: " + err);
+            console.log("\n\nProgram ended. Play again soon!!!.");
             return;
         }
 
         // Sanity checking on the input
-        if (result.letter.length == 1 && validateInput(result.letter))
-            console.log("You said: " + result.letter);
+        if (result.letter.length == 1 && validateInput(result.letter)) {
+            playGame(result.letter);
+        }
         
         // Get next letter
         getLetter();
     });
 };
 
-// Start game
+// Function to check if input is a letter
+var validateInput = (letter) => {
+    var regx = /^[a-z\u00C0-\u00ff]+$/;
+    return regx.test(letter);
+};
+
+// Start up Game
+startUpGame();
+
+// Prompt user for a letter
 getLetter();

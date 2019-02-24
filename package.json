@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/elp11999/ConstructorWordGuess#readme",
   "dependencies": {
-    "prompt": "^1.0.0"
+    "prompt": "^1.0.0",
+    "random-words": "^1.1.0"
   }
 }
