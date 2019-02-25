@@ -66,8 +66,9 @@ var createWordToGuess = () => {
     numberOfLettersInWord = uniqueValues.length;
 
     // Set random word
-    randomWord = randomWordArray[0];   
-    console.log("Random word is " + randomWord);
+    randomWord = randomWordArray[0];
+       
+    //console.log("Random word is " + randomWord);
 
     // Add letters of the random word to the word object
     for (var i = 0; i < randomWord.length; i++) {
@@ -143,6 +144,9 @@ var validateInput = (letter) => {
     var regx = /^[a-z\u00C0-\u00ff]+$/;
     return regx.test(letter);
 };
+
+// Say hello
+console.log("Word Guess Game!!!\n");
 
 // Start up Game
 startUpGame();
