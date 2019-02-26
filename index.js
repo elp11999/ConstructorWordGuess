@@ -98,7 +98,7 @@ var playGame = (letter) => {
 
     // Check for No guesses remaining
     if (guessesRemaining == 0) {
-        console.log("No guessing remaining. You lose!!\n");
+        console.log("No guesses remaining. You lose!!\n");
         console.log("The word was: " + randomWord + "\n");
 
         // Restart game
